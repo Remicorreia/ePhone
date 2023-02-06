@@ -30,8 +30,8 @@ class ProduitController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $gestionImage->manageImage($produit, $form);   
 
+            $gestionImage->manageImage($produit, $form);
             $produitRepository->save($produit, true);
 
             return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
@@ -52,6 +52,7 @@ class ProduitController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_produit_edit', methods: ['GET', 'POST'])]
+    
     public function edit(Request $request, Produit $produit, ProduitRepository $produitRepository, GestionImage $gestionImage): Response
     {
         $form = $this->createForm(ProduitType::class, $produit);
@@ -59,7 +60,6 @@ class ProduitController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $gestionImage->manageImage($produit, $form);   
-
             $produitRepository->save($produit, true);
 
             return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
