@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Produit;
 use App\Form\ProduitType;
 use App\Repository\ProduitRepository;
+use App\Service\GestionImage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,13 +23,15 @@ class ProduitController extends AbstractController
     }
 
     #[Route('/new', name: 'app_produit_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, ProduitRepository $produitRepository): Response
+    public function new(Request $request, ProduitRepository $produitRepository, GestionImage $gestionImage): Response
     {
         $produit = new Produit();
         $form = $this->createForm(ProduitType::class, $produit);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $gestionImage->manageImage($produit, $form);   
+
             $produitRepository->save($produit, true);
 
             return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
@@ -49,12 +52,14 @@ class ProduitController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_produit_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Produit $produit, ProduitRepository $produitRepository): Response
+    public function edit(Request $request, Produit $produit, ProduitRepository $produitRepository, GestionImage $gestionImage): Response
     {
         $form = $this->createForm(ProduitType::class, $produit);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $gestionImage->manageImage($produit, $form);   
+
             $produitRepository->save($produit, true);
 
             return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
